@@ -1,17 +1,38 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Main from './Main';
-import Create from './Create';
-import Update from './Update';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Main from "./components/Main";
+import BookCRUD from "./components/BookCRUD";
+import BookReviews from "./components/Main";
+
 
 function App() {
+  const [user, setUser] = useState(localStorage.getItem("username"));
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/create" element={<Create />} />
-        <Route path="/update/:id" element={<Update />} />
-      </Routes>
+      <div>
+        <Routes>
+          <Route
+            path="/login"
+            element={<Login setUser={setUser} />} // Pass setUser to Login
+          />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/"
+            element={user === "admin" ? <BookCRUD /> : <Main
+               />}
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }
